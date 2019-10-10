@@ -1,7 +1,6 @@
 from bs4 import BeautifulSoup
 import requests
 import pandas as pd
-import csv
 from datetime import datetime
 from pytz import timezone
 import time
@@ -12,13 +11,11 @@ format = "%Y-%m-%d %H:%M:%S"
 format_date = "%Y-%m-%d"
 format_hour = "%H"
 format_min = "%M"
-uri = "mongodb://shivamkapila:shivam123@ds333238.mlab.com:33238/stocks"
+uri = "mongodb://shivam:shivam123@ds333238.mlab.com:33238/stocks?retryWrites=false"
 link_text='https://secure.icicidirect.com/IDirectTrading/Trading/trading_stock_quote.aspx?Symbol='
 soup=BeautifulSoup
 
-data=pd.read_csv('Nifty_50_list.csv')
-com_code=data[['CODE']]
-
+com_code=['HDFBAN', 'RELPET', 'HDFC', 'INFTEC', 'ICIBAN', 'ITC', 'TCS', 'KOTMAH', 'LARTOU', 'HINLEV', 'AXIBAN', 'STABAN', 'BAJFI', 'MARUTI', 'INDBA', 'ASIPAI', 'BHAAIR', 'HCLTEC', 'TITIND', 'MAHMAH', 'BAFINS', 'NTPC', 'NESIND', 'POWGRI', 'ULTCEM', 'TECMAH', 'SUNPHA', 'ONGC', 'BAAUTO', 'BHARAS', 'INDOIL', 'COALIN', 'WIPRO', 'HERHON', 'BRIIND', 'UNIP', 'DRREDD', 'ADAPOR', 'GRASIM', 'VEDLIM', 'HINDAL', 'TATSTE', 'EICMOT', 'GAIL', 'JSWSTE', 'BHAINF', 'CIPLA', 'TATMOT', 'ZEEENT', 'YESBAN']
 while(1):
     client = pymongo.MongoClient(uri)
 
@@ -29,13 +26,14 @@ while(1):
     now_utc = datetime.now(timezone('UTC'))
     now_asia = now_utc.astimezone(timezone('Asia/Kolkata'))
 
-    check9am = now_asia.replace(hour=17, minute=7)
-    check3pm = now_asia.replace(hour=17, minute=12)
+    check9am = now_asia.replace(hour=9, minute=15)
+    check3pm = now_asia.replace(hour=15, minute=55)
+    
     if(now_asia > check9am and now_asia < check3pm):
         arr = []
     
         for i in range(0,50):
-            site_html=requests.get(link_text+com_code["CODE"][i])
+            site_html=requests.get(link_text+com_code[i])
             bs4_html = BeautifulSoup(site_html.content, 'html5lib') 
             
             table1=bs4_html.find('table',class_='smallfont1')
@@ -53,7 +51,7 @@ while(1):
             hour=now_asia.strftime(format_hour)
             min=now_asia.strftime(format_min)
             cur_data = {
-                'code': com_code["CODE"][i],
+                'code': com_code[i],
                 'ltp': ltp,
                 'dc': dc,
                 'do': do,
@@ -66,10 +64,9 @@ while(1):
                 'min': min             
                 }
             arr.append(cur_data)
-            print(com_code["CODE"][i],ltp,dc,do,dh,dl,pdc,date_time,date_today,hour,min)
+            print(com_code[i],ltp,dc,do,dh,dl,pdc,date_time,date_today,hour,min)
         print(arr)
-        stock_data.insert_many(arr)
-                
-        time.sleep(30)
+        stock_data.insert_many(arr)      
+        time.sleep(1800)
 
 
