@@ -6,6 +6,7 @@ from pytz import timezone
 import time
 import sys
 import pymongo
+import csv
 
 format = "%Y-%m-%d %H:%M:%S"
 format_date = "%Y-%m-%d"
@@ -14,6 +15,11 @@ format_min = "%M"
 uri = "mongodb://shivam:shivam123@ds333238.mlab.com:33238/stocks?retryWrites=false"
 link_text='https://secure.icicidirect.com/IDirectTrading/Trading/trading_stock_quote.aspx?Symbol='
 soup=BeautifulSoup
+
+with open('stock_data.csv','w',newline='',encoding='utf-8-sig') as writeFile:
+		writer = csv.writer(writeFile)
+		writer.writerow(['NAME','LTP','DC','DO','DH','DL','PDC','DATE_TIME','DATE_TODAY','HOUR','MIN'])
+		writeFile.close()
 
 com_code=['HDFBAN', 'RELPET', 'HDFC', 'INFTEC', 'ICIBAN', 'ITC', 'TCS', 'KOTMAH', 'LARTOU', 'HINLEV', 'AXIBAN', 'STABAN', 'BAJFI', 'MARUTI', 'INDBA', 'ASIPAI', 'BHAAIR', 'HCLTEC', 'TITIND', 'MAHMAH', 'BAFINS', 'NTPC', 'NESIND', 'POWGRI', 'ULTCEM', 'TECMAH', 'SUNPHA', 'ONGC', 'BAAUTO', 'BHARAS', 'INDOIL', 'COALIN', 'WIPRO', 'HERHON', 'BRIIND', 'UNIP', 'DRREDD', 'ADAPOR', 'GRASIM', 'VEDLIM', 'HINDAL', 'TATSTE', 'EICMOT', 'GAIL', 'JSWSTE', 'BHAINF', 'CIPLA', 'TATMOT', 'ZEEENT', 'YESBAN']
 while(1):
@@ -64,8 +70,12 @@ while(1):
                 'min': min             
                 }
             arr.append(cur_data)
-            print(com_code[i],ltp,dc,do,dh,dl,pdc,date_time,date_today,hour,min)
-        print(arr)
+            # print(com_code[i],ltp,dc,do,dh,dl,pdc,date_time,date_today,hour,min)
+            with open('stock_data.csv','a',newline='',encoding='utf-8-sig') as writeFile:
+                writer = csv.writer(writeFile)
+                writer.writerow([com_code[i],ltp,dc,do,dh,dl,pdc,date_time,date_today,hour,min])
+                writeFile.close()
+        # print(arr)
         stock_data.insert_many(arr)      
         time.sleep(1800)
 
