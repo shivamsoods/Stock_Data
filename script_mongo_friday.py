@@ -38,7 +38,7 @@ while(1):
     if(now_asia > check9am and now_asia < check3pm):
         arr = []
     
-        for i in range(0,50):
+        for i in range(0,51):
             site_html=requests.get(link_text+com_code[i])
             bs4_html = BeautifulSoup(site_html.content, 'html5lib') 
             
