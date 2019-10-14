@@ -35,7 +35,7 @@ while(1):
     check9am = now_asia.replace(hour=9, minute=15)
     check3pm = now_asia.replace(hour=15, minute=55)
     
-    if(1):
+    if(now_asia > check9am and now_asia < check3pm):
         arr = []
     
         for i in range(0,50):
