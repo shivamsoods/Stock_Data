@@ -1,10 +1,10 @@
 import csv
-with open('stock_data_tuesday1.csv','w',newline='',encoding='utf-8-sig') as writeFile:
+with open('stock_data_friday1.csv','w',newline='',encoding='utf-8-sig') as writeFile:
 		writer = csv.writer(writeFile)
 		writer.writerow(['NAME','LTP','DC','DO','DH','DL','PDC','CH','PCH','DV','LTT','WH52','WL52','DATE_TIME','DATE_TODAY','HOUR','MIN'])
 		writeFile.close()
 
-with open('stock_data_tuesday.csv','r',newline='',encoding='utf-8-sig') as writeFile:
+with open('stock_data_friday.csv','r',newline='',encoding='utf-8-sig') as writeFile:
 	reader = csv.DictReader(writeFile)
 	
 	for row in reader:
@@ -25,7 +25,7 @@ with open('stock_data_tuesday.csv','r',newline='',encoding='utf-8-sig') as write
 		date_today=row["DATE_TODAY"]
 		hour=row["HOUR"]
 		min=row["MIN"]
-		with open('stock_data_tuesday1.csv','a',newline='',encoding='utf-8-sig') as writeFile:
+		with open('stock_data_friday1.csv','a',newline='',encoding='utf-8-sig') as writeFile:
 			writer = csv.writer(writeFile)
 			writer.writerow([com_name,ltp,dc,do,dh,dl,pdc,ch,pch,dv,ltt,wh52,wl52,date_time,date_today,hour,min])
 			writeFile.close()	 
