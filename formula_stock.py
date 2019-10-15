@@ -1,3 +1,10 @@
+import requests
+from datetime import datetime
+from datetime import timedelta  
+
+from pytz import timezone
+import time
+import sys
 import csv
 
 def dayDiff(dh,dl):
@@ -37,8 +44,15 @@ def fiftyTwoWeek(ftl, pt):
 		stockReturn=-1	
 	return stockReturn
 
-with open('stock_data.csv','r',newline='',encoding='utf-8-sig') as readFile:
+now_utc = datetime.now(timezone('UTC'))
+now_asia = now_utc.astimezone(timezone('Asia/Kolkata'))
+now_server_time = now_asia - now_asia.replace(hour=18, minute=0) + timedelta(minutes=555) 
+print(now_server_time)
+
+with open('stock_data_tuesday.csv','r',newline='',encoding='utf-8-sig') as readFile:
 	reader = csv.DictReader(readFile)
+	# value = len(list(reader))
+
 	for row in reader:
 		dh=float(row["DH"])
 		dl=float(row["DL"])
