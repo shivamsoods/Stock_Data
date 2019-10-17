@@ -9,6 +9,7 @@ import sys
 import csv
 
 app = Flask(__name__)
+com_code=['BSESEN','HDFBAN', 'RELPET', 'HDFC', 'INFTEC', 'ICIBAN', 'ITC', 'TCS', 'KOTMAH', 'LARTOU', 'HINLEV', 'AXIBAN', 'STABAN', 'BAJFI', 'MARUTI', 'INDBA', 'ASIPAI', 'BHAAIR', 'HCLTEC', 'TITIND', 'MAHMAH', 'BAFINS', 'NTPC', 'NESIND', 'POWGRI', 'ULTCEM', 'TECMAH', 'SUNPHA', 'ONGC', 'BAAUTO', 'BHARAS', 'INDOIL', 'COALIN', 'WIPRO', 'HERHON', 'BRIIND', 'UNIP', 'DRREDD', 'ADAPOR', 'GRASIM', 'VEDLIM', 'HINDAL', 'TATSTE', 'EICMOT', 'GAIL', 'JSWSTE', 'BHAINF', 'CIPLA', 'TATMOT', 'ZEEENT', 'YESBAN']
 
 def dayDiff(dh,dl):
 	df=dh-dl
@@ -46,12 +47,13 @@ def fiftyTwoWeek(ftl, pt):
 	else:
 		stockReturn=-1	
 	return stockReturn
+
 def top_5():
 	format = "%Y-%m-%d %H:%M:%S"
-	format2 = "%H:%M:%S"
+	format2 = "%H:%M"
 	now_utc = datetime.now(timezone('UTC'))
 	now_asia = now_utc.astimezone(timezone('Asia/Kolkata'))
-	now_server_time = now_asia - now_asia.replace(hour=0, minute=0) + timedelta(minutes=555) 
+	now_server_time = now_asia - now_asia.replace(hour=9, minute=15) + timedelta(minutes=555) 
 	diff2 = datetime.max
 
 	with open('stock_data_tuesday1.csv','r',newline='',encoding='utf-8-sig') as readFile:
@@ -88,7 +90,7 @@ def top_5():
 			code.append(com_name)
 			per.append(df+pdf+cdf) 
 			inc.append((ltp - do)/ltp * 100)
-			print(com_name, (ltp - do)/ltp * 100,df+pdf+cdf)
+			# print(com_name, (ltp - do)/ltp * 100,df+pdf+cdf)
 			
 		readFile.close()
 
@@ -101,8 +103,8 @@ def top_5():
 				per[i], per[j] = per[j], per[i]
 
 	
-	for i in range(len(per)):
-		print(per[i],inc[i],code[i])
+	# for i in range(len(per)):
+		# print(per[i],inc[i],code[i])
 
 	count = 0
 	codes = []
@@ -137,7 +139,7 @@ def top_5():
 			count+=1
 		if(count >4): 
 			break
-	print(codes)
+	# print(codes)
 
 	top_5_stocks = []
 	for i in range(index+1,index+51):
@@ -145,7 +147,50 @@ def top_5():
 		com_name=str(row["NAME"])
 		for j in range(5):
 			if(codes[j] ==com_name):
-				top_5_stocks.append(row)
+				code_index = com_code.index(com_name)
+				graph_values = []
+				time_values = []
+				k=0
+				with open('stock_data1.csv','r',newline='',encoding='utf-8-sig') as readFile:
+					reader_graph = list(csv.DictReader(readFile))
+					l = len(list(reader_graph))
+					for i in range(code_index,l,51):
+						row = dict(reader_graph[i])
+						date_time=row["DATE_TIME"]
+						name=row["NAME"]
+						ltp=row["LTP"]
+						dummydate = datetime.date(datetime.now())
+						diff1 =  datetime.combine(dummydate,(datetime.min + now_server_time).time()) - datetime.combine(dummydate,(datetime.strptime(date_time,format)).time())
+						if(diff1.total_seconds() < 0):
+							break
+						else:
+							if(k != 1):
+								graph_values.append(row["DO"])
+								call_time = datetime.strptime(date_time,format)
+								m = call_time.minute
+								s = ""
+								if(m<10):
+									s = "0" + str(m)
+								else: 
+									s = str(m)
+								time_val = str(call_time.hour) + ":" + s
+								time_values.append(time_val)
+								k = 1
+							graph_values.append(ltp)
+							call_time = datetime.strptime(date_time,format)
+							m = call_time.minute
+							s = ""
+							if(m<10):
+								s= "0" + str(m)
+							else: 
+								s = str(m)
+							time_val = str(call_time.hour) + ":" + s
+							time_values.append(time_val)
+					readFile.close()
+					st_5 = row
+					st_5["graph_values"] = graph_values
+					st_5["time_values"] = time_values
+				top_5_stocks.append(st_5)
 
 	return(top_5_stocks)
 
@@ -155,9 +200,8 @@ def search_stock(search_code):
 	format2 = "%H:%M:%S"
 	now_utc = datetime.now(timezone('UTC'))
 	now_asia = now_utc.astimezone(timezone('Asia/Kolkata'))
-	now_server_time = now_asia - now_asia.replace(hour=0, minute=0) + timedelta(minutes=555) 
+	now_server_time = now_asia - now_asia.replace(hour=9, minute=15) + timedelta(minutes=555) 
 	diff2 = datetime.max
-
 	with open('stock_data_tuesday1.csv','r',newline='',encoding='utf-8-sig') as readFile:
 		reader = list(csv.DictReader(readFile))
 		l = len(list(reader))
@@ -177,9 +221,56 @@ def search_stock(search_code):
 			row = dict(reader[i])
 			com_name=str(row["NAME"])
 			if(com_name == search_code):
-				return(row)
-			
+				code_index = com_code.index(search_code)
+				# print(code_index)	
+				st_search = row
+				break
 		readFile.close()
+	code_index = com_code.index(search_code)
+	graph_values = []
+	time_values = []
+	k=0
+	with open('stock_data1.csv','r',newline='',encoding='utf-8-sig') as readFile:
+		reader_graph = list(csv.DictReader(readFile))
+		l = len(list(reader_graph))
+		for i in range(code_index,l,51):
+			row = dict(reader_graph[i])
+			date_time=row["DATE_TIME"]
+			name=row["NAME"]
+			ltp=row["LTP"]
+			dummydate = datetime.date(datetime.now())
+			diff1 =  datetime.combine(dummydate,(datetime.min + now_server_time).time()) - datetime.combine(dummydate,(datetime.strptime(date_time,format)).time())
+			if(diff1.total_seconds() < 0):
+				break
+			else:
+				if(k != 1):
+					graph_values.append(row["DO"])
+					call_time = datetime.strptime(date_time,format)
+					m = call_time.minute
+					s = ""
+					if(m<10):
+						s= "0" + str(m)
+					else: 
+						s = str(m)
+					time_val = str(call_time.hour) + ":" + s
+					time_values.append(time_val)
+					k = 1
+					# print(name)				
+				graph_values.append(ltp)
+				call_time = datetime.strptime(date_time,format)
+				m = call_time.minute
+				s = ""
+				if(m<10):
+					s= "0" + str(m)
+				else: 
+					s = str(m)
+				time_val = str(call_time.hour) + ":" + s
+				time_values.append(time_val)
+			# index1 = i - 51
+		readFile.close()
+		st_search["graph_values"] = graph_values
+		st_search["time_values"] = time_values
+		return(st_search)	
 
 
 def search_sensex():
@@ -187,7 +278,7 @@ def search_sensex():
 	format2 = "%H:%M:%S"
 	now_utc = datetime.now(timezone('UTC'))
 	now_asia = now_utc.astimezone(timezone('Asia/Kolkata'))
-	now_server_time = now_asia - now_asia.replace(hour=0, minute=0) + timedelta(minutes=555) 
+	now_server_time = now_asia - now_asia.replace(hour=9, minute=15) + timedelta(minutes=555) 
 	diff2 = datetime.max
 
 	with open('stock_data_tuesday1.csv','r',newline='',encoding='utf-8-sig') as readFile:
@@ -201,11 +292,57 @@ def search_sensex():
 			if(diff1.total_seconds() < 0):
 				break
 			index = i - 51
+		st = dict(reader[index])
 		readFile.close()
-		return(dict(reader[index]))
+	graph_values = []
+	time_values = []
+	k=0
+	with open('stock_data1.csv','r',newline='',encoding='utf-8-sig') as readFile:
+		reader_graph = list(csv.DictReader(readFile))
+		l = len(list(reader_graph))
+		for i in range(0,l,51):
+			row = dict(reader_graph[i])
+			date_time=row["DATE_TIME"]
+			name=row["NAME"]
+			ltp=row["LTP"]
+			dummydate = datetime.date(datetime.now())
+			diff1 =  datetime.combine(dummydate,(datetime.min + now_server_time).time()) - datetime.combine(dummydate,(datetime.strptime(date_time,format)).time())
+			if(diff1.total_seconds() < 0):
+				break
+			else:
+				if(k != 1):
+					graph_values.append(row["DO"])
+					call_time = datetime.strptime(date_time,format)
+					m = call_time.minute
+					s = ""
+					if(m<10):
+						s= "0" + str(m)
+					else: 
+						s = str(m)
+					time_val = str(call_time.hour) + ":" + s
+					time_values.append(time_val)
+					k = 1				
+				graph_values.append(ltp)
+				call_time = datetime.strptime(date_time,format)
+				m = call_time.minute
+				s = ""
+				if(m<10):
+					s= "0" + str(m)
+				else: 
+					s = str(m)
+				time_val = str(call_time.hour) + ":" + s			
+				time_values.append(time_val)
+			# index1 = i - 51
+		readFile.close()
+		st["graph_values"] = graph_values
+		st["time_values"] = time_values
+		return(st)
 
 
 
+@app.route('/')
+def home():
+    return json.dumps("1")
 @app.route('/top5')
 def top5():
     return json.dumps(top_5())
