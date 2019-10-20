@@ -8,16 +8,7 @@ import time
 import sys
 import csv
 import random
-from PIL import Image 
-import pytesseract 
-from pdf2image import convert_from_path 
-import os 
-import cloudinary as Cloud
-Cloud.config.update = ({
-    'cloud_name':os.environ.get('frictionhack'),
-    'api_key': os.environ.get('971254173499693'),
-    'api_secret': os.environ.get('2guczCHoWpxfwms9gGlF_T2AQhs')
-})
+
 app = Flask(__name__)
 com_code=['BSESEN','HDFBAN', 'RELPET', 'HDFC', 'INFTEC', 'ICIBAN', 'ITC', 'TCS', 'KOTMAH', 'LARTOU', 'HINLEV', 'AXIBAN', 'STABAN', 'BAJFI', 'MARUTI', 'INDBA', 'ASIPAI', 'BHAAIR', 'HCLTEC', 'TITIND', 'MAHMAH', 'BAFINS', 'NTPC', 'NESIND', 'POWGRI', 'ULTCEM', 'TECMAH', 'SUNPHA', 'ONGC', 'BAAUTO', 'BHARAS', 'INDOIL', 'COALIN', 'WIPRO', 'HERHON', 'BRIIND', 'UNIP', 'DRREDD', 'ADAPOR', 'GRASIM', 'VEDLIM', 'HINDAL', 'TATSTE', 'EICMOT', 'GAIL', 'JSWSTE', 'BHAINF', 'CIPLA', 'TATMOT', 'ZEEENT', 'YESBAN']
 
@@ -63,10 +54,10 @@ def top_5():
 	format2 = "%H:%M"
 	now_utc = datetime.now(timezone('UTC'))
 	now_asia = now_utc.astimezone(timezone('Asia/Kolkata'))
-	now_server_time = now_asia - now_asia.replace(hour=15, minute=0) + timedelta(minutes=555) 
+	now_server_time = now_asia - now_asia.replace(hour=0, minute=0) + timedelta(minutes=555) 
 	diff2 = datetime.max
 
-	with open('stock_data_tuesday1.csv','r',newline='',encoding='utf-8-sig') as readFile:
+	with open('new_stock_data_friday.csv','r',newline='',encoding='utf-8-sig') as readFile:
 		reader = list(csv.DictReader(readFile))
 		l = len(list(reader))
 		for i in range(0,l,51):
@@ -82,7 +73,7 @@ def top_5():
 	per = []
 	code = []
 	inc = []
-	with open('stock_data_tuesday1.csv','r',newline='',encoding='utf-8-sig') as readFile:
+	with open('new_stock_data_friday.csv','r',newline='',encoding='utf-8-sig') as readFile:
 		reader = list(csv.DictReader(readFile))
 		l = len(list(reader))
 		for i in range(index+1,index+51):
@@ -161,7 +152,7 @@ def top_5():
 				graph_values = []
 				time_values = []
 				k=0
-				with open('stock_data1.csv','r',newline='',encoding='utf-8-sig') as readFile:
+				with open('new_stock_data.csv','r',newline='',encoding='utf-8-sig') as readFile:
 					reader_graph = list(csv.DictReader(readFile))
 					l = len(list(reader_graph))
 					for i in range(code_index,l,51):
@@ -210,9 +201,9 @@ def search_stock(search_code):
 	format2 = "%H:%M:%S"
 	now_utc = datetime.now(timezone('UTC'))
 	now_asia = now_utc.astimezone(timezone('Asia/Kolkata'))
-	now_server_time = now_asia - now_asia.replace(hour=15, minute=0) + timedelta(minutes=555) 
+	now_server_time = now_asia - now_asia.replace(hour=0, minute=0) + timedelta(minutes=555) 
 	diff2 = datetime.max
-	with open('stock_data_tuesday1.csv','r',newline='',encoding='utf-8-sig') as readFile:
+	with open('new_stock_data_friday.csv','r',newline='',encoding='utf-8-sig') as readFile:
 		reader = list(csv.DictReader(readFile))
 		l = len(list(reader))
 		for i in range(0,l,51):
@@ -224,7 +215,7 @@ def search_stock(search_code):
 				break
 		index = i - 51
 		readFile.close()
-	with open('stock_data_tuesday1.csv','r',newline='',encoding='utf-8-sig') as readFile:
+	with open('new_stock_data_friday.csv','r',newline='',encoding='utf-8-sig') as readFile:
 		reader = list(csv.DictReader(readFile))
 		l = len(list(reader))
 		for i in range(index+1,index+51):
@@ -240,7 +231,7 @@ def search_stock(search_code):
 	graph_values = []
 	time_values = []
 	k=0
-	with open('stock_data1.csv','r',newline='',encoding='utf-8-sig') as readFile:
+	with open('new_stock_data.csv','r',newline='',encoding='utf-8-sig') as readFile:
 		reader_graph = list(csv.DictReader(readFile))
 		l = len(list(reader_graph))
 		for i in range(code_index,l,51):
@@ -288,10 +279,10 @@ def search_sensex():
 	format2 = "%H:%M:%S"
 	now_utc = datetime.now(timezone('UTC'))
 	now_asia = now_utc.astimezone(timezone('Asia/Kolkata'))
-	now_server_time = now_asia - now_asia.replace(hour=15, minute=0) + timedelta(minutes=555) 
+	now_server_time = now_asia - now_asia.replace(hour=0, minute=0) + timedelta(minutes=555) 
 	diff2 = datetime.max
 
-	with open('stock_data_tuesday1.csv','r',newline='',encoding='utf-8-sig') as readFile:
+	with open('new_stock_data_friday.csv','r',newline='',encoding='utf-8-sig') as readFile:
 		reader = list(csv.DictReader(readFile))
 		l = len(list(reader))
 		for i in range(0,l,51):
@@ -307,7 +298,7 @@ def search_sensex():
 	graph_values = []
 	time_values = []
 	k=0
-	with open('stock_data1.csv','r',newline='',encoding='utf-8-sig') as readFile:
+	with open('new_stock_data.csv','r',newline='',encoding='utf-8-sig') as readFile:
 		reader_graph = list(csv.DictReader(readFile))
 		l = len(list(reader_graph))
 		for i in range(0,l,51):
@@ -353,10 +344,10 @@ def short_term():
 	format2 = "%H:%M"
 	now_utc = datetime.now(timezone('UTC'))
 	now_asia = now_utc.astimezone(timezone('Asia/Kolkata'))
-	now_server_time = now_asia - now_asia.replace(hour=15, minute=0) + timedelta(minutes=555) 
+	now_server_time = now_asia - now_asia.replace(hour=0, minute=0) + timedelta(minutes=555) 
 	diff2 = datetime.max
 
-	with open('stock_data_tuesday1.csv','r',newline='',encoding='utf-8-sig') as readFile:
+	with open('new_stock_data_friday.csv','r',newline='',encoding='utf-8-sig') as readFile:
 		reader = list(csv.DictReader(readFile))
 		l = len(list(reader))
 		for i in range(0,l,51):
@@ -372,7 +363,7 @@ def short_term():
 	per = []
 	code = []
 	inc = []
-	with open('stock_data_tuesday1.csv','r',newline='',encoding='utf-8-sig') as readFile:
+	with open('new_stock_data_friday.csv','r',newline='',encoding='utf-8-sig') as readFile:
 		reader = list(csv.DictReader(readFile))
 		l = len(list(reader))
 		for i in range(index+1,index+51):
@@ -442,7 +433,7 @@ def short_term():
 				graph_values = []
 				time_values = []
 				k=0
-				with open('stock_data1.csv','r',newline='',encoding='utf-8-sig') as readFile:
+				with open('new_stock_data.csv','r',newline='',encoding='utf-8-sig') as readFile:
 					reader_graph = list(csv.DictReader(readFile))
 					l = len(list(reader_graph))
 					for i in range(code_index,l,51):
@@ -490,10 +481,10 @@ def long_term():
 	format2 = "%H:%M"
 	now_utc = datetime.now(timezone('UTC'))
 	now_asia = now_utc.astimezone(timezone('Asia/Kolkata'))
-	now_server_time = now_asia - now_asia.replace(hour=15, minute=0) + timedelta(minutes=555) 
+	now_server_time = now_asia - now_asia.replace(hour=0, minute=0) + timedelta(minutes=555) 
 	diff2 = datetime.max
 
-	with open('stock_data_tuesday1.csv','r',newline='',encoding='utf-8-sig') as readFile:
+	with open('new_stock_data_friday.csv','r',newline='',encoding='utf-8-sig') as readFile:
 		reader = list(csv.DictReader(readFile))
 		l = len(list(reader))
 		for i in range(0,l,51):
@@ -509,7 +500,7 @@ def long_term():
 	per = []
 	code = []
 	inc = []
-	with open('stock_data_tuesday1.csv','r',newline='',encoding='utf-8-sig') as readFile:
+	with open('new_stock_data_friday.csv','r',newline='',encoding='utf-8-sig') as readFile:
 		reader = list(csv.DictReader(readFile))
 		l = len(list(reader))
 		for i in range(index+1,index+51):
@@ -572,7 +563,7 @@ def long_term():
 				graph_values = []
 				time_values = []
 				k=0
-				with open('stock_data1.csv','r',newline='',encoding='utf-8-sig') as readFile:
+				with open('new_stock_data.csv','r',newline='',encoding='utf-8-sig') as readFile:
 					reader_graph = list(csv.DictReader(readFile))
 					l = len(list(reader_graph))
 					for i in range(code_index,l,51):
@@ -621,25 +612,6 @@ def budget_stocks(budget, ls):
 	else:
 		return(long_term())
 
-def text_ocr():
-	# fn = 'Seller'
-	fn = ["seller", "shares", "purchaser", "stock", "Seller", "Shares", "Purchaser", "Stock", "SELLER", "PURCHASER", "STOCK", "SHARES"]
-	outfile = "out_text.txt"
-	f = open(outfile, "w")          
-	text = str(((pytesseract.image_to_string(Image.open("Image.jpeg")))))          
-	text = text.replace('-\n', '') 
-	f.write(text)          
-	f.close()         
-	txt = []
-	for i in range(len(fn)):
-		f = fn[i]
-		with open ('out_text.txt', 'rt') as myfile:  
-			for myline in myfile: 
-				if f in myline:
-					txt.append(myline)
-			myfile.close()
-	return txt  	
-
 @app.route('/')
 def home():
     return json.dumps("Friction Hacks")
@@ -662,14 +634,6 @@ def budget():
 	long_short = request.args.get('ls')
 	return json.dumps(budget_stocks(budget, long_short))
 
-@app.route('/ocr')
-def ocr():
-	url = request.args.get('q')
-	print(url) 
-	r = requests.get(url)
-	with open('google_logo.jpeg', 'wb') as f:
-		f.write(r.content)
-	return json.dumps(text_ocr())
-
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, port=3000)
+

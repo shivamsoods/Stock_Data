@@ -622,27 +622,42 @@ def budget_stocks(budget, ls):
 		return(long_term())
 
 def text_ocr():
-	# fn = 'Seller'
-	fn = ["seller", "shares", "purchaser", "stock", "Seller", "Shares", "Purchaser", "Stock", "SELLER", "PURCHASER", "STOCK", "SHARES"]
+	fn = ['date', 'shares', 'seller', 'purchaser', 'stock']
 	outfile = "out_text.txt"
-	f = open(outfile, "w")          
-	text = str(((pytesseract.image_to_string(Image.open("Image.jpeg")))))          
+	f = open(outfile, "a")          
+	text = str(((pytesseract.image_to_string(Image.open("Image.jpg")))))          
 	text = text.replace('-\n', '') 
 	f.write(text)          
 	f.close()         
 	txt = []
-	for i in range(len(fn)):
-		f = fn[i]
-		with open ('out_text.txt', 'rt') as myfile:  
+	with open ('out_text.txt', 'rt') as myfile:  
+		for i in range(len(fn)):
 			for myline in myfile: 
-				if f in myline:
+				if(myline.find(fn[i])>-1):  	
 					txt.append(myline)
-			myfile.close()
+	return txt
+
+def test_run():
+	# fn = ['Seller', 'shares', 'purchaser', 'stock']
+	fn = "seller"
+	outfile = "out_text.txt"
+	f = open(outfile, "w")          
+	text = str(((pytesseract.image_to_string(Image.open("I1.jpeg")))))          
+	text = text.replace('-\n', '') 
+	f.write(text)          
+	f.close()         
+	txt = []
+	with open ('out_text.txt', 'rt') as myfile:  
+		# for i in range(len(fn)):
+			# print(fn[i])
+			for myline in myfile: 
+				if(myline.find(fn)>-1):  	
+					txt.append(myline)
 	return txt  	
 
 @app.route('/')
 def home():
-    return json.dumps("Friction Hacks")
+    return json.dumps(test_run())
 @app.route('/top5')
 def top5():
     return json.dumps(top_5())
@@ -669,7 +684,14 @@ def ocr():
 	r = requests.get(url)
 	with open('google_logo.jpeg', 'wb') as f:
 		f.write(r.content)
-	return json.dumps(text_ocr())
+	return json.dumps("1")
+	# # url = request.args['url'] 
+	# r = request.args.get('url')
+	# with app.open_instance_resource('downloaded_file', 'wb') as f:
+	# 	f.write(r.content)
+	# return json.dumps(text_ocr)
+	# # return json.dumps(budget_stocks(budget, long_short))
+
 
 if __name__ == '__main__':
     app.run(debug=True)
